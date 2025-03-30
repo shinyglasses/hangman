@@ -16,16 +16,16 @@ word = 'test' #randomly select a word once we got that
 gameplay_elements = Gameplay_Elements()
 letter = ''
 invalid_answer = False
-
+exceptions = [pygame.K_LSHIFT, pygame.K_RSHIFT, pygame.K_CAPSLOCK]
 while running:
     screen.fill(screen_color)
     hangman.display()
     gameplay_elements.create_underlines('test')
 
     gameplay_elements.input_answer()
-    utils.render_text(letter, font, 30, 'red', (370, 350))
+    utils.render_text(letter, font, 30, 'black  ', (370, 350))
     if invalid_answer:
-        utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (370, 370))
+        utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -37,12 +37,14 @@ while running:
             if (('a' <= user_input <= 'z') or ('A' <= user_input <= 'Z')) and len(user_input) == 1:
                 letter = user_input
                 invalid_answer = False
+            #removes letter if user presses backspace
             elif event.key == pygame.K_BACKSPACE:
                 letter = ''
-            elif event.key == pygame.K_TAB or event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+            elif event.key in exceptions:
                 invalid_answer = False
             elif event.key == pygame.K_RETURN:
                 pass
+               #TO DO: increase limb count if answer is wrong, else put correct letters in corresponding spot
             else:
                 letter = ''
                 invalid_answer = True
