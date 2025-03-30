@@ -28,6 +28,6 @@ class Hangman:
         elif part['type'] == 'line':
             pygame.draw.line(screen, 'black', part['start_pos'], part['end_pos'], part['width'])
         elif limb == 6: #the user used all their attempts
-           #insert end screen
+           pass #insert end screen
   
 
