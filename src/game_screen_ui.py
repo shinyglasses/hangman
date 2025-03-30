@@ -1,6 +1,7 @@
 import pygame
 import utils 
 import os
+from printingrandomwords import get_random_word
 from hangman import Hangman
 from gameplay_elements import Gameplay_Elements
 
@@ -12,7 +13,7 @@ font = os.path.join('resources', 'Roboto-Regular.ttf')
 running = True
 
 hangman = Hangman('test')
-word = 'test' #randomly select a word once we got that
+word = get_random_word() #randomly select a word once we got that
 gameplay_elements = Gameplay_Elements()
 letter = ''
 invalid_answer = False
