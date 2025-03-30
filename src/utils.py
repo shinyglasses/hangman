@@ -8,3 +8,6 @@ def render_text(text, font, font_size, color, position):
     font = pygame.font.Font(font, font_size)
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, position)
+
+def draw_rectangle(screen, color, x, y, width, height):
+    pygame.draw.rect(screen, color, (x, y, width, height))
