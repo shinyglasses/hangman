@@ -42,7 +42,7 @@ class Gameplay_Elements:
         answer_rect = pygame.draw.rect(screen, 'gray',pygame.Rect(rect_x, 350, 100, 50))
         return  answer_rect
     
-    def check_if_correct_letter(word, letter):
+    def check_if_correct_letter(self, word, letter):
         positions = []
         for i in range(len(word)):
             if letter in word[i]:
@@ -69,7 +69,3 @@ class Gameplay_Elements:
                #TO DO: increase limb count if answer is wrong, else put correct letters in corresponding spot
             else:
                 self.invalid_answer = True
-
-    
-    
-    
