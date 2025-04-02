@@ -67,5 +67,6 @@ class Gameplay_Elements:
             elif event.key == pygame.K_RETURN:
                 pass
                #TO DO: increase limb count if answer is wrong, else put correct letters in corresponding spot
+               #use limb_count
             else:
                 self.invalid_answer = True
