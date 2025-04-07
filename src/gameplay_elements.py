@@ -1,8 +1,9 @@
 import pygame
 import utils
-
+import os
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
+font = os.path.join('resources', 'Roboto-Regular.ttf')
 
 class Gameplay_Elements:
     def __init__(self):
@@ -11,6 +12,8 @@ class Gameplay_Elements:
         #or False the entire time bc handle_user_input is called every frame     
         self.letter = ''
         self.invalid_answer = False
+        self.underline_positions = []
+        self.correct_letter = False
 
     def create_underlines(self, word):
         spacing = 30  #horizontal space between each underline
@@ -18,10 +21,10 @@ class Gameplay_Elements:
         first_starting_x = 200  #starting x position for the first underline
         y_value = 200 
         line_height = 20 
-
+       
         #x_end for the first underline
         x_end = first_starting_x + line_length
-        
+    
         #creates an underline for each letter
         for i in range(len(word) + 1):
             if i == 0:
@@ -32,6 +35,9 @@ class Gameplay_Elements:
             x_end = x_start + line_length  
             
             pygame.draw.line(screen, 'black', (x_start, y_value), (x_end, y_value), line_height)
+            self.underline_positions.append([x_start, x_end, y_value])
+        
+
 
     def input_answer(self):
         from game_screen_ui import font #imported here to avoid circular imports
@@ -43,10 +49,16 @@ class Gameplay_Elements:
         return  answer_rect
     
     def check_if_correct_letter(self, word, letter):
+        from game_screen_ui import hangman
         positions = []
+        correct_letter = False
         for i in range(len(word)):
             if letter in word[i]:
              positions.append(i)
+             correct_letter = True
+        if not correct_letter:
+            hangman.limb_count += 1
+                
         return positions
     
     def handle_user_input(self, event):
@@ -62,11 +74,18 @@ class Gameplay_Elements:
             elif event.key == pygame.K_BACKSPACE:
                 self.letter = ''
             elif event.key in exceptions:
-                self.letter = 'test'
                 self.invalid_answer = False
             elif event.key == pygame.K_RETURN:
-                pass
-               #TO DO: increase limb count if answer is wrong, else put correct letters in corresponding spot
-               #use limb_count
+                self.invalid_answer = False
+                self.correct_letter = True
+                
             else:
                 self.invalid_answer = True
+    def display_correct_guesses(self, word):
+        positions = self.check_if_correct_letter(word, self.letter)
+        for position in positions:
+            x_start, x_end, y_value = self.underline_positions[position]
+            utils.render_text(self.letter, font, 30, 'black', (
+                (x_start + x_end) // 2,
+                y_value - 40
+            ))

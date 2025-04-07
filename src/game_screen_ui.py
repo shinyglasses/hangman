@@ -29,19 +29,13 @@ while running:
 
     utils.render_text(gameplay_elements.letter, font, 30, 'black', (370, 350))
     print(letter)
-    gameplay_elements.check_if_correct_letter(word, gameplay_elements.letter)
+    if gameplay_elements.correct_letter:
+       gameplay_elements.display_correct_guesses(word)
     if invalid_answer:
         utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
         gameplay_elements.handle_user_input(event)
-        
-        if event.type == pygame.KEYDOWN: # for testing, remove later
-            if event.key == pygame.K_a:  
-                hangman.limb_count += 1 
-    
-
     pygame.display.flip()
