@@ -18,7 +18,7 @@ hangman = Hangman(word)
 gameplay_elements = Gameplay_Elements()
 letter = gameplay_elements.letter
 invalid_answer = gameplay_elements.invalid_answer
-
+correct_letter = gameplay_elements.correct_letter
 
 while running:
     screen.fill(screen_color)
@@ -28,9 +28,12 @@ while running:
     gameplay_elements.input_answer()
 
     utils.render_text(gameplay_elements.letter, font, 30, 'black', (370, 350))
-    print(letter)
-    if gameplay_elements.correct_letter:
+
+
+    if correct_letter:
        gameplay_elements.display_correct_guesses(word)
+    print(gameplay_elements.correct_letter)
+
     if invalid_answer:
         utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
 

@@ -11,9 +11,10 @@ class Gameplay_Elements:
         #the below attributes are here because if i put them as local variables, it would remain '' 
         #or False the entire time bc handle_user_input is called every frame     
         self.letter = ''
-        self.invalid_answer = False
-        self.underline_positions = []
+        self.invalid_answer = True
         self.correct_letter = False
+        self.underline_positions = []
+
 
     def create_underlines(self, word):
         spacing = 30  #horizontal space between each underline
@@ -74,16 +75,18 @@ class Gameplay_Elements:
             elif event.key == pygame.K_BACKSPACE:
                 self.letter = ''
             elif event.key in exceptions:
-                self.invalid_answer = False
+                pass
             elif event.key == pygame.K_RETURN:
-                self.invalid_answer = False
-                self.correct_letter = True
+                if not self.invalid_answer:
+                    self.correct_letter = True
+            
                 
             else:
                 self.invalid_answer = True
     def display_correct_guesses(self, word):
         positions = self.check_if_correct_letter(word, self.letter)
         for position in positions:
+            print('e')
             x_start, x_end, y_value = self.underline_positions[position]
             utils.render_text(self.letter, font, 30, 'black', (
                 (x_start + x_end) // 2,
