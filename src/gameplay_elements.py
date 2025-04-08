@@ -11,8 +11,11 @@ class Gameplay_Elements:
         #the below attributes are here because if i put them as local variables, it would remain '' 
         #or False the entire time bc handle_user_input is called every frame     
         self.letter = ''
-        self.invalid_answer = True
+        self.invalid_answer = False
         self.correct_letter = False
+        self.underline_coords = []
+        self.show_letter = False
+        self.correct_letter_list = []
         self.underline_positions = []
 
 
@@ -36,7 +39,7 @@ class Gameplay_Elements:
             x_end = x_start + line_length  
             
             pygame.draw.line(screen, 'black', (x_start, y_value), (x_end, y_value), line_height)
-            self.underline_positions.append([x_start, x_end, y_value])
+            self.underline_coords.append([x_start, x_end, y_value])
         
 
 
@@ -51,16 +54,20 @@ class Gameplay_Elements:
     
     def check_if_correct_letter(self, word, letter):
         from game_screen_ui import hangman
-        positions = []
+
         correct_letter = False
+        if letter == '':
+            return
         for i in range(len(word)):
             if letter in word[i]:
-             positions.append(i)
-             correct_letter = True
+                self.underline_positions.append(i)
+                self.correct_letter_list.append(letter)
+                correct_letter = True
         if not correct_letter:
             hangman.limb_count += 1
+            
                 
-        return positions
+    
     
     def handle_user_input(self, event):
         exceptions = [pygame.K_LSHIFT, pygame.K_RSHIFT, pygame.K_CAPSLOCK]
@@ -70,25 +77,28 @@ class Gameplay_Elements:
             # checks if its a letter of the alphabet
             if (('a' <= user_input <= 'z') or ('A' <= user_input <= 'Z')) and len(user_input) == 1:
                 self.letter = user_input
+                self.correct_letter = True
                 self.invalid_answer = False
             #removes letter if user presses backspace
             elif event.key == pygame.K_BACKSPACE:
                 self.letter = ''
+        
             elif event.key in exceptions:
                 pass
             elif event.key == pygame.K_RETURN:
-                if not self.invalid_answer:
-                    self.correct_letter = True
-            
-                
+                if self.correct_letter:
+                   self.show_letter = True
             else:
                 self.invalid_answer = True
+
     def display_correct_guesses(self, word):
-        positions = self.check_if_correct_letter(word, self.letter)
-        for position in positions:
-            print('e')
-            x_start, x_end, y_value = self.underline_positions[position]
-            utils.render_text(self.letter, font, 30, 'black', (
-                (x_start + x_end) // 2,
-                y_value - 40
-            ))
+        self.check_if_correct_letter(word, self.letter)
+    
+        print(self.underline_positions)
+        for position in self.underline_positions:
+            for letter in self.correct_letter_list:
+                x_start, x_end, y_value = self.underline_coords[position]
+                utils.render_text(letter, font, 30, 'black', (
+                    (x_start + x_end) // 2,
+                    y_value - 40
+                ))  
