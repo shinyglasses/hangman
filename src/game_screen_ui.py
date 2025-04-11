@@ -17,7 +17,7 @@ hangman = Hangman(word)
 
 gameplay_elements = Gameplay_Elements()
 
-print(word)
+print(word) #TO DO: remove this line (just here for debugging)
 
 while running:
     screen.fill(screen_color)
@@ -37,5 +37,5 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        gameplay_elements.handle_user_input(event)
+        gameplay_elements.handle_user_input(event, word, gameplay_elements.letter)
     pygame.display.flip()

@@ -1,9 +1,8 @@
 import pygame
 import utils
-import os
+
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
-font = os.path.join('resources', 'Roboto-Regular.ttf')
 
 class Gameplay_Elements:
     def __init__(self):
@@ -50,15 +49,18 @@ class Gameplay_Elements:
         return  answer_rect
     
     def check_if_correct_letter(self, word, user_letter):
-        self.pending_guess.clear()
+        matched_positions = []
+
         if user_letter == '':
-            return
+            return matched_positions
+        self.correct_letter = False
         for position, letter in enumerate(word):
             #TO DO: the appending to pending guesses needs to change
-            if len(self.pending_guess) == 0:
-              self.pending_guess.append((letter, position))
-            if user_letter == word[position]:
-                self.correct_letter = True
+                if user_letter == letter:
+                  matched_positions.append(position)
+                  self.correct_letter = True
+        return matched_positions
+
                 
     def handle_user_input(self, event, word, user_letter):
         from game_screen_ui import hangman
@@ -79,25 +81,31 @@ class Gameplay_Elements:
             elif event.key in exceptions:
                  #here so it doesnt show non letters in the box (if putting numbers, itll say invalid input)
                 pass
+            
             elif event.key == pygame.K_RETURN:
-                
+                if not self.letter:
+                   pass  #dont do anything for entering on an empty input box
+
+                positions = self.check_if_correct_letter(word, user_letter)
+
                 if self.correct_letter:
-                   #adds pending guess to correct letter and pos list
-                   self.correct_letter_and_position_list.extend(self.pending_guess)
-                   self.pending_guess.clear()
-                   self.correct_letter = False
-                elif self.letter == '':
-                    #this is here so limbs arent added if user clicks enter while their cursor is over an empty input box
-                    pass
+                    for pos in positions:
+                        guess = (user_letter, pos)
+                        if guess not in self.correct_letter_and_position_list:
+                            self.correct_letter_and_position_list.append(guess)
+                    self.correct_letter = False
                 else:
                     hangman.limb_count += 1
-                   
+            
+            elif self.letter == '':
+                #this is here so limbs arent added if user clicks enter while their cursor is over an empty input box
+                pass
+                
             else:
                 self.show_invalid_input_message = True
 
     def display_correct_guesses(self, word):
-        self.check_if_correct_letter(word, self.letter)
-        
+        from game_screen_ui import font
         for letter, position in self.correct_letter_and_position_list:
             x_start, x_end, y_value = self.underline_coords[position]
             utils.render_text(letter, font, 30, 'black', (
