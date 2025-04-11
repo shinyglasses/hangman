@@ -11,13 +11,12 @@ class Gameplay_Elements:
         #the below attributes are here because if i put them as local variables, it would remain '' 
         #or False the entire time bc handle_user_input is called every frame     
         self.letter = ''
+        #TO DO: make better variable names for the two below
         self.invalid_answer = False
         self.correct_letter = False
         self.underline_coords = []
-        self.show_letter = False
-        self.correct_letter_list = []
-        self.underline_positions = []
-
+        self.correct_letter_and_position_list = [] #a list of tuples, with the first value in each tuple being the letter and the second being its position in the word
+        self.pending_guesses = []
 
     def create_underlines(self, word):
         spacing = 30  #horizontal space between each underline
@@ -30,7 +29,7 @@ class Gameplay_Elements:
         x_end = first_starting_x + line_length
     
         #creates an underline for each letter
-        for i in range(len(word) + 1):
+        for i in range(len(word)):
             if i == 0:
                 x_start = first_starting_x  
             else:
@@ -42,7 +41,6 @@ class Gameplay_Elements:
             self.underline_coords.append([x_start, x_end, y_value])
         
 
-
     def input_answer(self):
         from game_screen_ui import font #imported here to avoid circular imports
         text_rect = utils.render_text('Put desired guess in the box below', font, 40, 'black', (100, 300))
@@ -52,24 +50,28 @@ class Gameplay_Elements:
         answer_rect = pygame.draw.rect(screen, 'gray',pygame.Rect(rect_x, 350, 100, 50))
         return  answer_rect
     
-    def check_if_correct_letter(self, word, letter):
+    def check_if_correct_letter(self, word, user_letter):
         from game_screen_ui import hangman
+        letter_and_position_already_in_list = False
 
-        correct_letter = False
-        if letter == '':
+        if user_letter == '':
             return
         for i in range(len(word)):
-            if letter in word[i]:
-                self.underline_positions.append(i)
-                self.correct_letter_list.append(letter)
-                correct_letter = True
-        if not correct_letter:
+            if user_letter == word[i]:
+                letter_and_position_already_in_list =  any(user_letter == letter and i == position
+                    for letter, position in self.correct_letter_and_position_list)
+                if not letter_and_position_already_in_list:  
+                   self.pending_guesses.append((user_letter, i))
+                   self.correct_letter = True
+        """if not correct_letter:
             hangman.limb_count += 1
+            self.letter = ''"""
             
                 
     
     
     def handle_user_input(self, event):
+        from game_screen_ui import hangman
         exceptions = [pygame.K_LSHIFT, pygame.K_RSHIFT, pygame.K_CAPSLOCK]
         #checks if mouse is over the answer rect and if user inputs text
         if self.answer_rect.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.KEYDOWN: 
@@ -77,28 +79,33 @@ class Gameplay_Elements:
             # checks if its a letter of the alphabet
             if (('a' <= user_input <= 'z') or ('A' <= user_input <= 'Z')) and len(user_input) == 1:
                 self.letter = user_input
-                self.correct_letter = True
                 self.invalid_answer = False
             #removes letter if user presses backspace
             elif event.key == pygame.K_BACKSPACE:
                 self.letter = ''
-        
             elif event.key in exceptions:
                 pass
+                #is this conditional even necessary?
             elif event.key == pygame.K_RETURN:
                 if self.correct_letter:
-                   self.show_letter = True
+                   #adds pending guess to correct letter and pos list
+                   self.correct_letter_and_position_list.extend(self.pending_guesses)
+                   self.pending_guesses.clear()
+                else:
+                    print('reuihygsfhrgskisdfohjgtruhf')
+                    hangman.limb_count += 1
+                   
             else:
                 self.invalid_answer = True
 
     def display_correct_guesses(self, word):
         self.check_if_correct_letter(word, self.letter)
     
-        print(self.underline_positions)
-        for position in self.underline_positions:
-            for letter in self.correct_letter_list:
-                x_start, x_end, y_value = self.underline_coords[position]
-                utils.render_text(letter, font, 30, 'black', (
-                    (x_start + x_end) // 2,
-                    y_value - 40
-                ))  
+
+        
+        for letter, position in self.correct_letter_and_position_list:
+            x_start, x_end, y_value = self.underline_coords[position]
+            utils.render_text(letter, font, 30, 'black', (
+                (x_start + x_end) // 2,
+                y_value - 40
+            ))  

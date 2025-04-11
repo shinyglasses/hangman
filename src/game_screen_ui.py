@@ -29,8 +29,8 @@ while running:
     utils.render_text(gameplay_elements.letter, font, 30, 'black', (370, 350))
 
 
-    if gameplay_elements.show_letter:
-      gameplay_elements.display_correct_guesses(word)
+
+    gameplay_elements.display_correct_guesses(word)
     
     if gameplay_elements.invalid_answer:
         utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
