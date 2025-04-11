@@ -8,15 +8,16 @@ font = os.path.join('resources', 'Roboto-Regular.ttf')
 class Gameplay_Elements:
     def __init__(self):
         self.answer_rect = self.input_answer()
-        #the below attributes are here because if i put them as local variables, it would remain '' 
-        #or False the entire time bc handle_user_input is called every frame     
+        #the attributes are here because if they were local variables, it would reset 
+        #the variables values back to default each frame
         self.letter = ''
-        #TO DO: make better variable names for the two below
-        self.invalid_answer = False
+        self.show_invalid_input_message = False
         self.correct_letter = False
-        self.underline_coords = []
-        self.correct_letter_and_position_list = [] #a list of tuples, with the first value in each tuple being the letter and the second being its position in the word
-        self.pending_guesses = []
+        self.underline_coords = [] 
+        #the below list is filled with tuples(first value = letter, second value = its position in the word)
+        self.correct_letter_and_position_list = []
+        self.pending_guess = []
+        self.number_of_correct_guesses = 0
 
     def create_underlines(self, word):
         spacing = 30  #horizontal space between each underline
@@ -36,72 +37,66 @@ class Gameplay_Elements:
                 x_start = x_end + spacing
             
             x_end = x_start + line_length  
-            
             pygame.draw.line(screen, 'black', (x_start, y_value), (x_end, y_value), line_height)
             self.underline_coords.append([x_start, x_end, y_value])
         
-
     def input_answer(self):
         from game_screen_ui import font #imported here to avoid circular imports
         text_rect = utils.render_text('Put desired guess in the box below', font, 40, 'black', (100, 300))
         #next 2 lines are used to center the rect
         text_rect = text_rect.get_rect() 
         rect_x = 100 + (text_rect.width - 100)//2
-        answer_rect = pygame.draw.rect(screen, 'gray',pygame.Rect(rect_x, 350, 100, 50))
+        answer_rect = pygame.draw.rect(screen, 'gray', pygame.Rect(rect_x, 350, 100, 50))
         return  answer_rect
     
     def check_if_correct_letter(self, word, user_letter):
-        from game_screen_ui import hangman
-        letter_and_position_already_in_list = False
-
+        self.pending_guess.clear()
         if user_letter == '':
             return
-        for i in range(len(word)):
-            if user_letter == word[i]:
-                letter_and_position_already_in_list =  any(user_letter == letter and i == position
-                    for letter, position in self.correct_letter_and_position_list)
-                if not letter_and_position_already_in_list:  
-                   self.pending_guesses.append((user_letter, i))
-                   self.correct_letter = True
-        """if not correct_letter:
-            hangman.limb_count += 1
-            self.letter = ''"""
-            
+        for position, letter in enumerate(word):
+            #TO DO: the appending to pending guesses needs to change
+            if len(self.pending_guess) == 0:
+              self.pending_guess.append((letter, position))
+            if user_letter == word[position]:
+                self.correct_letter = True
                 
-    
-    
-    def handle_user_input(self, event):
+    def handle_user_input(self, event, word, user_letter):
         from game_screen_ui import hangman
-        exceptions = [pygame.K_LSHIFT, pygame.K_RSHIFT, pygame.K_CAPSLOCK]
+        #exceptions are so it doesnt show something non letters, like "shift", in the input box 
+        exceptions = [pygame.K_LSHIFT, pygame.K_RSHIFT, pygame.K_CAPSLOCK, pygame.K_RMETA, pygame.K_LMETA,
+                      pygame.K_MINUS, pygame.K_EQUALS, pygame.K_LEFTBRACKET, pygame.K_RIGHTBRACKET, pygame.K_SPACE,
+                      pygame.K_SEMICOLON, pygame.K_QUOTE, pygame.K_COMMA, pygame.K_PERIOD, pygame.K_SLASH]
         #checks if mouse is over the answer rect and if user inputs text
         if self.answer_rect.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.KEYDOWN: 
             user_input = pygame.key.name(event.key)
             # checks if its a letter of the alphabet
             if (('a' <= user_input <= 'z') or ('A' <= user_input <= 'Z')) and len(user_input) == 1:
                 self.letter = user_input
-                self.invalid_answer = False
+                self.show_invalid_input_message = False
             #removes letter if user presses backspace
             elif event.key == pygame.K_BACKSPACE:
                 self.letter = ''
             elif event.key in exceptions:
+                 #here so it doesnt show non letters in the box (if putting numbers, itll say invalid input)
                 pass
-                #is this conditional even necessary?
             elif event.key == pygame.K_RETURN:
+                
                 if self.correct_letter:
                    #adds pending guess to correct letter and pos list
-                   self.correct_letter_and_position_list.extend(self.pending_guesses)
-                   self.pending_guesses.clear()
+                   self.correct_letter_and_position_list.extend(self.pending_guess)
+                   self.pending_guess.clear()
+                   self.correct_letter = False
+                elif self.letter == '':
+                    #this is here so limbs arent added if user clicks enter while their cursor is over an empty input box
+                    pass
                 else:
-                    print('reuihygsfhrgskisdfohjgtruhf')
                     hangman.limb_count += 1
                    
             else:
-                self.invalid_answer = True
+                self.show_invalid_input_message = True
 
     def display_correct_guesses(self, word):
         self.check_if_correct_letter(word, self.letter)
-    
-
         
         for letter, position in self.correct_letter_and_position_list:
             x_start, x_end, y_value = self.underline_coords[position]
@@ -109,3 +104,7 @@ class Gameplay_Elements:
                 (x_start + x_end) // 2,
                 y_value - 40
             ))  
+            self.number_of_correct_guesses += 1
+            if self.number_of_correct_guesses == len(word):
+                #nelson, add win screen here
+                pass

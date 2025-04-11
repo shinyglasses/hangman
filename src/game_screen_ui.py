@@ -26,13 +26,12 @@ while running:
 
     gameplay_elements.input_answer()
 
+    #displays user letter in the textbox
     utils.render_text(gameplay_elements.letter, font, 30, 'black', (370, 350))
-
-
 
     gameplay_elements.display_correct_guesses(word)
     
-    if gameplay_elements.invalid_answer:
+    if gameplay_elements.show_invalid_input_message:
         utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
 
     for event in pygame.event.get():
