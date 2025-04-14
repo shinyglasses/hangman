@@ -191,10 +191,6 @@ class Gameplay_Elements:
 
     def handle_user_input(self, event, word, user_letter):
         from game_screen_ui import hangman
-        # Exceptions are so it doesn't show something non-letters, like "shift", in the input box 
-        exceptions = [pygame.K_LSHIFT, pygame.K_RSHIFT, pygame.K_CAPSLOCK, pygame.K_RMETA, pygame.K_LMETA,
-                      pygame.K_MINUS, pygame.K_EQUALS, pygame.K_LEFTBRACKET, pygame.K_RIGHTBRACKET, pygame.K_SPACE,
-                      pygame.K_SEMICOLON, pygame.K_QUOTE, pygame.K_COMMA, pygame.K_PERIOD, pygame.K_SLASH]
         # Checks if mouse is over the answer rect and if user inputs text
         if self.answer_rect.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.KEYDOWN: 
             user_input = pygame.key.name(event.key)
@@ -205,14 +201,13 @@ class Gameplay_Elements:
             # Removes letter if user presses backspace
             elif event.key == pygame.K_BACKSPACE:
                 self.letter = ''
-            elif event.key in exceptions:
-                # Here so it doesn't show non-letters in the box (if putting numbers, it'll say invalid input)
-                pass
-            
+        
             elif event.key == pygame.K_RETURN:
-                if not self.letter:
-                   pass  # Don't do anything for entering on an empty input box
-
+             
+                if self.letter == '':
+                # This is here so limbs aren't added if user clicks enter while their cursor is over an empty input box
+                    return
+                
                 positions = self.check_if_correct_letter(word, user_letter)
 
                 if self.correct_letter:
@@ -224,11 +219,7 @@ class Gameplay_Elements:
                 else:
                     hangman.limb_count += 1
             
-            elif self.letter == '':
-                # This is here so limbs aren't added if user clicks enter while their cursor is over an empty input box
-                pass
-                
-            else:
+            elif pygame.K_1 <= event.key <= pygame.K_9:
                 self.show_invalid_input_message = True
 
     def display_correct_guesses(self, word):
