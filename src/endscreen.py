@@ -6,7 +6,6 @@ pygame.init()
 # Set up the screen
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Hangman')
-running = True
 font = os.path.join('resources', 'Roboto-Regular.ttf')
 
 class EndScreen:
@@ -63,17 +62,6 @@ class EndScreen:
         skull_rect = rotated_skull_image.get_rect(center=(640, 680)) 
         screen.blit(rotated_skull_image, skull_rect)
         pygame.display.flip()  # Update screen
-
-while running:
-    # Display the end screen continuously in order to fill conditions for any updates to the screen
-    EndScreen.draw_end_screen()
-    EndScreen.draw_skulls()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-        elif event.type == pygame.KEYDOWN:  # Press any key to continue
-            screen.fill('black')  # Clear the screen after the key press (optional)
-            pygame.display.flip()  # Update the display after clearing
-            pygame.time.wait(1000)
-            running = False
+    def display():
+        EndScreen.draw_end_screen()
+        EndScreen.draw_skulls()

@@ -2,6 +2,7 @@ import pygame
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
+from endscreen import EndScreen
 
 class Hangman:
   def __init__(self, word):
@@ -28,4 +29,4 @@ class Hangman:
         elif part['type'] == 'line':
             pygame.draw.line(screen, 'black', part['start_pos'], part['end_pos'], part['width'])
         elif limb == 6: #the user used all their attempts
-           pass #nelson, insert end screen here
+           EndScreen.display()
