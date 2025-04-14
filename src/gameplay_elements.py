@@ -1,5 +1,8 @@
 import pygame
 import utils
+from start_screen import StartScreen
+
+start_screen = (StartScreen)
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -115,5 +118,4 @@ class Gameplay_Elements:
             ), center=True)
             self.number_of_correct_guesses += 1
             if self.number_of_correct_guesses == len(word):
-                #nelson, add win screen here
-                pass
+                start_screen
