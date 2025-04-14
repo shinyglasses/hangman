@@ -108,10 +108,11 @@ class Gameplay_Elements:
         from game_screen_ui import font
         for letter, position in self.correct_letter_and_position_list:
             x_start, x_end, y_value = self.underline_coords[position]
+            
             utils.render_text(letter, font, 30, 'black', (
                 (x_start + x_end) // 2,
-                y_value - 40
-            ))  
+                y_value - 30
+            ), center=True)
             self.number_of_correct_guesses += 1
             if self.number_of_correct_guesses == len(word):
                 #nelson, add win screen here

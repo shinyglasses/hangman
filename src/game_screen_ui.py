@@ -12,7 +12,8 @@ screen_color = 'white'
 font = os.path.join('resources', 'Roboto-Regular.ttf')
 running = True
 
-word = get_random_word() #randomly selects a word 
+#
+word = 'melon' #randomly selects a word 
 hangman = Hangman(word)
 
 gameplay_elements = Gameplay_Elements()
