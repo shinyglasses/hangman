@@ -1,21 +1,14 @@
-# The plan!!
-
-1. A word list (Nelson, json)
-  - Randomly pick a word from the word list
-2. End screen (Nelson)
-  - You lose!!
-  - return to the start
-3. Start screen
-  - Manual to play
-  - any other information
-4. Black and white color scheme 
-5.  The game screen
-  - A bar where the user can put their letter 
-    - only allows them to put one
-    - enter to submit
-  - The man (Crystal)
-  - The function(s) to add limbs (6)
-  - The under score thing 
-    - The number of underscores = length of word
-  - A box to keep track of wrong words
-  - Optimal sizing of list of letters
+# The Plan:
+1. __Code UI first__
+   - start screen, game screen (make it look good, find assets)
+   - hold off on the save/load screen.
+2. __Get the gameplay loop functional__
+   - Put words in words.json
+   - Have the amount of letters correspond to the # of _ on the screen
+   - Allow the user input letters
+      - If correct, show the letter in the correct position on the screen
+      - If not correct, add a limb to the hangman
+# Maybes:
+1. Different difficulties
+    - Maybe rarer words or less allowed guesses
+2. Maybe a jumpscare with faces of different people appearing on the circle head
