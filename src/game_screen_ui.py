@@ -59,7 +59,7 @@ while running:
     pygame.display.flip()
  """
 
-import pygame
+""" import pygame
 import utils
 import os
 from randomwords import get_random_word
@@ -129,4 +129,80 @@ while running:
             running = False
         gameplay_elements.handle_user_input(event, word, gameplay_elements.letter)
 
-    pygame.display.flip()
+    pygame.display.flip() """
+
+import pygame
+import utils
+import os
+from randomwords import get_random_word
+from hangman import Hangman
+from gameplay_elements import Gameplay_Elements
+from start_screen import StartScreen
+
+pygame.init()
+screen = pygame.display.set_mode((1280, 720))
+pygame.display.set_caption('Hangman')
+screen_color = 'white'
+font = os.path.join('resources', 'Roboto-Regular.ttf')
+running = True
+startscreen = StartScreen(screen)
+game_won = False  # Flag to track if the game has been won
+
+# Main Game Loop
+while running:
+    # Start Screen Loop
+    showing_start_screen = True
+    while showing_start_screen:
+        screen.fill('white')
+        startscreen.display_all_elements()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if startscreen.button_rect.collidepoint(event.pos):
+                    # If clicked inside the button rect, move on to game
+                    showing_start_screen = False
+                    break
+
+        pygame.display.flip()
+
+    # Initialize game variables
+    word = get_random_word()  # Randomly selects a word each time
+    hangman = Hangman(word)
+    gameplay_elements = Gameplay_Elements()
+    print(word)
+    game_won = False  # Reset the win condition every new game
+
+    # Game Loop
+    while not game_won:
+        screen.fill(screen_color)
+        hangman.display()
+        gameplay_elements.create_underlines(word)
+
+        gameplay_elements.input_answer()
+
+        # Display user letter in the textbox
+        utils.render_text(gameplay_elements.letter, font, 30, 'black', (370, 350))
+
+        if gameplay_elements.show_invalid_input_message:
+            utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
+
+        # Check if the player has guessed all letters correctly
+        if gameplay_elements.display_correct_guesses(word):
+            game_won = True
+
+        # Handle user input during gameplay
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                game_won = True  # Stop the game if user closes the window
+            gameplay_elements.handle_user_input(event, word, gameplay_elements.letter)
+
+        pygame.display.flip()
+
+    # Reset the game when won, and go back to the start screen
+    if game_won:
+        startscreen.display_all_elements()
+        pygame.display.flip()
