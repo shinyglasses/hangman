@@ -118,4 +118,4 @@ class Gameplay_Elements:
             ), center=True)
             self.number_of_correct_guesses += 1
             if self.number_of_correct_guesses == len(word):
-                start_screen
+                start_screen.display_all_elements()

@@ -62,26 +62,11 @@ class StartScreen:
         bottom_text = self.bottom_font.render("Created by Nelson Ouyang and Crystal Lin", True, 'black')
         bottom_rect = bottom_text.get_rect(center=(650, 690))
         self.screen.blit(bottom_text, bottom_rect)
-running = True
-# Create an instance of the screen
+    
+    def display_all_elements(self):
+        self.draw_hangman()
+        self.draw_title()
+        self.draw_start_button()
+        self.draw_tilted_message()
+        self.draw_bottom_text()
 
-while running:
-    start_screen = StartScreen(screen)
-    screen.fill('white')  # Set background to white
-    start_screen.draw_hangman()
-    start_screen.draw_title()
-    start_screen.draw_start_button()
-    start_screen.draw_tilted_message()
-    start_screen.draw_bottom_text()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if start_screen.button_rect.collidepoint(event.pos):
-                screen.fill('black') 
-                pygame.display.flip()
-                running = False
-
-    pygame.display.flip()
