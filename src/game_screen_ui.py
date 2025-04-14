@@ -9,7 +9,7 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Hangman')
 screen_color = 'white'
-font = None
+font = os.path.join('resources', 'Roboto-Regular.ttf')
 running = True
 
 word = get_random_word() #randomly selects a word 
