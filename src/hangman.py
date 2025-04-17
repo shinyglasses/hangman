@@ -23,10 +23,12 @@ class Hangman:
     pygame.draw.line(screen, 'black', (900, 41), (900, 450), 20) #long vertical bar of hanging thing
     pygame.draw.line(screen, 'black', (870, 450), (930, 450), 20) #bottom bar of hanging thing
     for limb in range(self.limb_count):
+        print(limb)
         part = self.body_parts[limb]
         if part['type'] == 'circle':
             pygame.draw.circle(screen, 'black', part['pos'], part['radius'])
         elif part['type'] == 'line':
             pygame.draw.line(screen, 'black', part['start_pos'], part['end_pos'], part['width'])
-        elif limb == 6: #the user used all their attempts
-           EndScreen.display()
+    if self.limb_count > len(self.body_parts):
+      EndScreen.display()
+      self.limb_count = 0
