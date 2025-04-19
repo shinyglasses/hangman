@@ -69,4 +69,5 @@ class StartScreen:
         self.draw_start_button()
         self.draw_tilted_message()
         self.draw_bottom_text()
+        pygame.display.flip()
 

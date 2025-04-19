@@ -65,3 +65,4 @@ class EndScreen:
     def display():
         EndScreen.draw_end_screen()
         EndScreen.draw_skulls()
+        pygame.display.flip()
