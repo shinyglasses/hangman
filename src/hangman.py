@@ -2,7 +2,7 @@ import pygame
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
-from endscreen import EndScreen
+
 
 class Hangman:
   def __init__(self, word):

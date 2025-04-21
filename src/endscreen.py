@@ -3,14 +3,13 @@ import os
 
 pygame.init()
 
-# Set up the screen
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Hangman')
-font = os.path.join('resources', 'Roboto-Regular.ttf')
+
 
 class EndScreen:
     def draw_end_screen():
-        screen.fill((255, 255, 255))  # Set background to white
+        screen.fill('white')  
         
         # Load fonts
         font = pygame.font.Font(None, 120)
@@ -23,7 +22,7 @@ class EndScreen:
         screen.blit(text, text_rect)
         
         # Render sub message
-        sub_text = sub_font.render("Press any key to continue", True, (100, 100, 100))
+        sub_text = sub_font.render("Press any key to play again", True, (100, 100, 100))
         sub_text_rect = sub_text.get_rect(center=(640, 500))  # Positioned below the main message
         screen.blit(sub_text, sub_text_rect)
 
@@ -37,6 +36,8 @@ class EndScreen:
         grave_image = pygame.transform.scale(grave_image, (100, 100))
         grave_rect = grave_image.get_rect(center=(640,  410))
         screen.blit(grave_image, grave_rect)
+
+        EndScreen.draw_skulls()
 
     def draw_skulls():
         image_path = os.path.join('resources', 'skull.png')  # Path to the skull image
@@ -62,7 +63,4 @@ class EndScreen:
         skull_rect = rotated_skull_image.get_rect(center=(640, 680)) 
         screen.blit(rotated_skull_image, skull_rect)
         pygame.display.flip()  # Update screen
-    def display():
-        EndScreen.draw_end_screen()
-        EndScreen.draw_skulls()
-        pygame.display.flip()
+

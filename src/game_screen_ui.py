@@ -1,4 +1,3 @@
-
 import pygame
 import utils
 import os
@@ -19,20 +18,18 @@ startscreen = StartScreen(screen)
 word = get_random_word()  # Randomly selects a word each time
 hangman = Hangman(word)
 gameplay_elements = Gameplay_Elements()
-print(word)
+
 
 game_state = 'Start Screen'  # can be Start Screen, Game Screen, or End Screen
-game_result = None  # can be win or loss
-
 
 while running:
     while game_state == 'Start Screen':
-        screen.fill('white')
+        screen.fill(screen_color)
         startscreen.display_all_elements()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+               
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if startscreen.button_rect.collidepoint(event.pos):
                     game_state = 'Game Screen'
@@ -50,42 +47,34 @@ while running:
             utils.render_text('Invalid input. Only letters allowed', font, 40, 'black', (120, 400))
 
         # Win condition
-        if gameplay_elements.display_correct_guesses(word): #condition that true if all letters have been guessed
-            game_result = "win"
+        if gameplay_elements.display_correct_guesses(word): #true if all letters have been guessed
             # Reset the game
             word = get_random_word()
             hangman = Hangman(word)
             gameplay_elements = Gameplay_Elements()
-            print(word)
             game_state = 'Start Screen'
 
         # Loss condition
         elif hangman.limb_count >= len(hangman.body_parts):
-            game_result = "loss"
             game_state = 'End Screen'
 
         # Handle input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-                game_state = 'End Screen'
+                pygame.quit()
             gameplay_elements.handle_user_input(event, word, gameplay_elements.letter)
 
         pygame.display.flip()
 
     while game_state == 'End Screen':
-        if game_result == "loss":
-            EndScreen.draw_end_screen()
-            EndScreen.draw_skulls()
+        EndScreen.draw_end_screen()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
             if event.type == pygame.KEYDOWN:
                 # Reset the game
                 word = get_random_word()
                 hangman = Hangman(word)
                 gameplay_elements = Gameplay_Elements()
-                print(word)
                 game_state = 'Game Screen'
         pygame.display.flip()
